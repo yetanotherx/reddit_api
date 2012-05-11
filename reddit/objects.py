@@ -619,14 +619,20 @@ class Submission(Approvable, Deletable, Distinguishable, Editable, Reportable,
 
 class Subreddit(Messageable):
     """A class for Subreddits."""
-    ban = _modify_relationship('banned', is_sub=True)
-    unban = _modify_relationship('banned', unlink=True, is_sub=True)
-    make_contributor = _modify_relationship('contributor', is_sub=True)
+    add_banned = _modify_relationship('banned', is_sub=True)
+    add_contributor = _modify_relationship('contributor', is_sub=True)
+    add_moderator = _modify_relationship('moderator', is_sub=True)
+    add_wiki_banned = _modify_relationship('wikibanned', is_sub=True)
+    add_wiki_contributor = _modify_relationship('wikicontribute', is_sub=True)
+    remove_banned = _modify_relationship('banned', unlink=True, is_sub=True)
     remove_contributor = _modify_relationship('contributor', unlink=True,
                                               is_sub=True)
-    make_moderator = _modify_relationship('moderator', is_sub=True)
     remove_moderator = _modify_relationship('moderator', unlink=True,
                                             is_sub=True)
+    remove_wiki_banned = _modify_relationship('wikibanned', unlink=True,
+                                              is_sub=True)
+    remove_wiki_contributor = _modify_relationship('wikicontribute',
+                                                   unlink=True, is_sub=True)
 
     get_hot = _get_sorter('')
     get_controversial = _get_sorter('controversial', t='day')
@@ -675,7 +681,7 @@ class Subreddit(Messageable):
         return self.reddit_session.flair_list(self, *args, **kwargs)
 
     def get_banned(self, *args, **kwargs):
-        """Get banned users for this subreddit."""
+        """Get the list of banned users for this subreddit."""
         return self.reddit_session.get_banned(self, *args, **kwargs)
 
     def get_settings(self, *args, **kwargs):
@@ -683,7 +689,7 @@ class Subreddit(Messageable):
         return self.reddit_session.get_settings(self, *args, **kwargs)
 
     def get_contributors(self, *args, **kwargs):
-        """Get contributors for this subreddit."""
+        """Get the list of contributors for this subreddit."""
         return self.reddit_session.get_contributors(self, *args, **kwargs)
 
     def get_flair(self, *args, **kwargs):
@@ -691,7 +697,7 @@ class Subreddit(Messageable):
         return self.reddit_session.get_flair(self, *args, **kwargs)
 
     def get_moderators(self, *args, **kwargs):
-        """Get moderators for this subreddit."""
+        """Get the list of moderators for this subreddit."""
         return self.reddit_session.get_moderators(self, *args, **kwargs)
 
     def get_modqueue(self, *args, **kwargs):
@@ -709,6 +715,14 @@ class Subreddit(Messageable):
     def get_stylesheet(self, *args, **kwargs):
         """Get the stylesheet and associated images for this subreddit."""
         return self.reddit_session.get_stylesheet(self, *args, **kwargs)
+
+    def get_wiki_banned(self, *args, **kwargs):
+        """Get the list of wikibanned users for this subreddit."""
+        return self.reddit_session.get_wiki_banned(self, *args, **kwargs)
+
+    def get_wiki_contributors(self, *args, **kwargs):
+        """Get the list of wikicontributor users for this subreddit."""
+        return self.reddit_session.get_wiki_contributors(self, *args, **kwargs)
 
     def search(self, query, *args, **kwargs):
         """Search this subreddit."""

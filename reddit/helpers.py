@@ -63,6 +63,10 @@ def _modify_relationship(relationship, unlink=False, is_sub=False):
     """
     # the API uses friend and unfriend to manage all of these relationships
     url_key = 'unfriend' if unlink else 'friend'
+    evict_map = {'banned': 'banned', 'contributor': 'contributors',
+                 'moderator': 'moderators',
+                 'wikicontribute': 'wikicontributors',
+                 'wikibanned': 'wikibanned'}
 
     @require_login
     def do_relationship(thing, user):
@@ -73,7 +77,10 @@ def _modify_relationship(relationship, unlink=False, is_sub=False):
         else:
             params['container'] = thing.content_id
         url = thing.reddit_session.config[url_key]
-        return thing.reddit_session.request_json(url, params)
+        evict_url = thing.reddit_session.config[evict_map[relationship]]
+        response = thing.reddit_session.request_json(url, params)
+        _request.evict([evict_url])  # pylint: disable-msg=E1101
+        return response
     return do_relationship
 
 

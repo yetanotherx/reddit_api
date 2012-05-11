@@ -587,21 +587,33 @@ class ModeratorUserTest(unittest.TestCase, AuthenticatedHelper):
         self.subreddit = self.r.get_subreddit(self.sr)
         self.other = self.r.get_redditor('pyapitestuser3', fetch=True)
 
-    def test_ban(self):
-        self.subreddit.ban(self.other)
+    def test_add_banned(self):
+        self.subreddit.add_banned(self.other)
         self.assertTrue(self.other in self.subreddit.get_banned())
 
-    def test_make_contributor(self):
-        self.subreddit.make_contributor(self.other)
+    def test_add_contributor(self):
+        self.subreddit.add_contributor(self.other)
         self.assertTrue(self.other in self.subreddit.get_contributors())
 
-    def test_make_moderator(self):
-        self.subreddit.make_moderator(self.other)
+    def test_add_moderator(self):
+        self.subreddit.add_moderator(self.other)
         self.assertTrue(self.other in self.subreddit.get_moderators())
 
-    def test_make_moderator_by_name(self):
-        self.subreddit.make_moderator(text_type(self.other))
+    def test_add_moderator_by_name(self):
+        self.subreddit.add_moderator(text_type(self.other))
         self.assertTrue(self.other in self.subreddit.get_moderators())
+
+    def test_add_wiki_banned(self):
+        self.subreddit.add_wiki_banned(self.other)
+        self.assertTrue(self.other in self.subreddit.get_wiki_banned())
+
+    def test_add_wiki_contributor(self):
+        self.subreddit.add_wiki_contributor(self.other)
+        self.assertTrue(self.other in self.subreddit.get_wiki_contributors())
+
+    def test_remove_banned(self):
+        self.subreddit.remove_banned(self.other)
+        self.assertFalse(self.other in self.subreddit.get_banned())
 
     def test_remove_contributor(self):
         self.subreddit.remove_contributor(self.other)
@@ -611,9 +623,14 @@ class ModeratorUserTest(unittest.TestCase, AuthenticatedHelper):
         self.subreddit.remove_moderator(self.other)
         self.assertFalse(self.other in self.subreddit.get_moderators())
 
-    def test_unban(self):
-        self.subreddit.unban(self.other)
-        self.assertFalse(self.other in self.subreddit.get_banned())
+    def test_remove_wiki_banned(self):
+        self.subreddit.remove_wiki_banned(self.other)
+        self.assertFalse(self.other in self.subreddit.get_wiki_banned())
+
+    def test_remove_wiki_contributor(self):
+        self.subreddit.remove_wiki_contributor(self.other)
+        self.assertFalse(self.other in self.subreddit.get_wiki_contributors())
+
 
 
 class RedditorTest(unittest.TestCase, AuthenticatedHelper):

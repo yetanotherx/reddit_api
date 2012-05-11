@@ -92,7 +92,9 @@ class Config(object):  # pylint: disable-msg=R0903
                  'unsave':              'api/unsave/',
                  'user':                'user/%s/',
                  'user_about':          'user/%s/about/',
-                 'vote':                'api/vote/'}
+                 'vote':                'api/vote/',
+                 'wikibanned':          'r/%s/about/banned/',
+                 'wikicontributors':    'r/%s/about/wikicontribute/'}
     SSL_PATHS = ('login', )
 
     def __init__(self, site_name):
@@ -420,6 +422,21 @@ class SubredditExtension(BaseReddit):
         """Get the stylesheet and associated images for the given subreddit."""
         return self.request_json(self.config['stylesheet'] %
                                  six.text_type(subreddit))['data']
+
+    @reddit.decorators.require_login
+    @reddit.decorators.require_moderator
+    def get_wiki_banned(self, subreddit):
+        """Get the list of wiki banned users for the given subreddit."""
+        return self.request_json(self.config['wikibanned'] %
+                                 six.text_type(subreddit))
+
+    @reddit.decorators.require_login
+    @reddit.decorators.require_moderator
+    def get_wiki_contributors(self, subreddit):
+        """Get the list of wiki contributors for the given subreddit."""
+        return self.request_json(self.config['wikicontributors'] %
+                                 six.text_type(subreddit))
+
 
     @reddit.decorators.require_login
     @reddit.decorators.require_moderator
